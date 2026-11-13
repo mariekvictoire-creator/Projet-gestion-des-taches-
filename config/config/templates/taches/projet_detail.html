@@ -1,0 +1,50 @@
+{% extends "base.html" %} 
+{% block title %}{{ object.nom }}{% endblock %} {% block content %} 
+<div class="d-flex justify-content-between align-items-start mb-3">  
+    <div>    
+        <h1 class="h3 mb-1">{{ object.nom }}</h1>    
+        <p class="text-muted mb-0">{{ object.description|default:"Aucune description." }}</p>  
+    </div>  
+    <div>    
+        <a class="btn btn-outline-primary" href="{% url 'taches:projet_modifier' object.pk %}">Modifier le projet</a>    
+        <a class="btn btn-primary" href="{% url 'taches:tache_creer' %}?projet={{ object.pk }}">+ Ajouter une tâche</a>  
+    </div> 
+</div> 
+<div class="btn-group mb-3" role="group">  
+    <a class="btn btn-outline-dark {% if not statut_courant %}active{% endif %}" href="?">Toutes</a> 
+     {% for val, label in statuts %}    
+    <a class="btn btn-outline-dark {% if val == statut_courant %}active{% endif %}" href="?statut={{ val}}">{{ label }}</a>  
+    {% endfor %} 
+</div> 
+<div class="card shadow-sm">  
+    <table class="table table-hover mb-0 align-middle">    
+        <thead class="table-light">
+            <tr>
+                <th>Titre</th>
+                <th>Statut</th>
+                <th>Priorité</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>    
+        <tbody>    
+            {% for t in taches %}      
+            <tr>        
+                <td><a href="{% url 'taches:tache_detail' t.pk %}" class="text-decoration-none">{{ t.titre }}</a>    
+                </td>        
+                <td><span class="badge text-bg-{{ t.badge_statut }}">{{ t.get_statut_display }}</span></td>        
+                <td><span class="badge text-bg-{{ t.badge_priorite }}">{{ t.get_priorite_display }}</span></td>        
+                <td class="text-end">          
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'taches:tache_modifier' t.pk %}">Modifier</a>          
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'taches:tache_supprimer' t.pk %}">Supprimer</a>        
+                </td>      
+            </tr>    
+            {% empty %}      
+            <tr>
+                <td colspan="4" class="text-center text-muted py-4">Aucune tâche dans ce projet.</td>
+            </tr>    
+            {% endfor %}    
+        </tbody>  
+    </table> 
+</div> 
+<a class="btn btn-link mt-3" href="{% url 'taches:projet_liste' %}">← Retour aux projets</a> 
+{% endblock %} 
