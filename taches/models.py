@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -12,7 +12,6 @@ class Tache(models.Model):
 
     def __str__(self):
         return self.titre
-=======
 from django.db import models 
 
 
