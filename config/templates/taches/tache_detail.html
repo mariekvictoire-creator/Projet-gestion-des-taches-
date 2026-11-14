@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+ {% block title %}{{ object.titre }}{% endblock %} {% block content %} 
+ <div class="card shadow-sm">  <div class="card-body">    
+    <h1 class="h4">{{ object.titre }}</h1>    
+    <p class="mb-2">      
+        <span class="badge text-bg-{{ object.badge_statut }}">{{ object.get_statut_display }}</span>      
+        <span class="badge text-bg-{{ object.badge_priorite }}">Priorité {{ object.get_priorite_display|lower }}</span>    
+    </p>    
+<p class="text-muted mb-1">Projet :<a href="{% url 'taches:projet_detail' object.projet.pk %}">{{ object.projet.nom }}</a></p>    
+<p class="text-muted small">Créée le {{ object.date_creation|date:"d/m/Y H:i" }} · modifiée le {{ obj    ect.date_modification|date:"d/m/Y H:i" }}</p>    
+<hr>    
+    <p>{{ object.description|default:"Aucune description."|linebreaksbr }}</p>
+</div>  
+<div class="card-footer bg-white">    
+    <a class="btn btn-outline-secondary" href="{% url 'taches:tache_liste' %}">Retour</a>    
+    <a class="btn btn-primary" href="{% url 'taches:tache_modifier' object.pk %}">Modifier</a>    
+    <a class="btn btn-danger" href="{% url 'taches:tache_supprimer' object.pk %}">Supprimer</a>  
+</div> </div> 
+{% endblock %}

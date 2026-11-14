@@ -1,0 +1,81 @@
+{% extends "base.html" %} 
+{% block title %}Tâches{% endblock %} 
+{% block content %} 
+<div class="d-flex justify-content-between align-items-center mb-3">  
+    <h1 class="h3 mb-0">Toutes les tâches</h1>  
+    <a class="btn btn-primary" href="{% url 'taches:tache_creer' %}">+ Nouvelle tâche</a> 
+</div> 
+<form method="get" class="row g-2 mb-3">  
+    <div class="col-md-3">    
+        <select name="statut" class="form-select" onchange="this.form.submit()">      
+            <option value="">Tous les statuts</option>      
+            {% for val, label in statuts %}        
+            <option value="{{ val }}" {% if val == statut_courant %}selected{% endif %}>{{ label }}</option>      
+            {% endfor %}   
+        </select> 
+    </div>  
+    <div class="col-md-3">    
+        <select name="priorite" class="form-select" onchange="this.form.submit()">      
+            <option value="">Toutes les priorités</option>      
+            {% for val, label in priorites %}        
+            <option value="{{ val }}" {% if val == priorite_courante %}selected{% endif %}>{{ label }}</option>      
+            {% endfor %}    
+        </select>  
+    </div>  
+    <div class="col-md-3">    
+        <select name="projet" class="form-select" onchange="this.form.submit()"> 
+            <option value="">Tous les projets</option>      
+            {% for p in projets %}        
+            <option value="{{ p.pk }}" {% if p.pk|stringformat:"s" == projet_courant %}selected{% endif %}>{{p.nom }}</option>      
+            {% endfor %}    
+        </select>  
+    </div>  
+        <div class="col-md-3">    
+            <a class="btn btn-outline-secondary" href="{% url 'taches:tache_liste' %}">Réinitialiser</a>  
+        </div> 
+</form> 
+        <div class="card shadow-sm">  
+            <table class="table table-hover mb-0 align-middle">    
+                <thead class="table-light">      
+                    <tr>
+                        <th>Titre</th>
+                        <th>Projet</th>
+                        <th>Statut</th>
+                        <th>Priorité</th>
+                        <th class="text-end">Actions</th>
+                    </tr>    
+                </thead>    
+                    <tbody>    
+                        {% for t in taches %}      
+                        <tr>        
+                            <td><a href="{% url 'taches:tache_detail' t.pk %}" class="text-decoration-none">{{ t.titre }}</a>    
+                            </td>        
+                            <td><a href="{% url 'taches:projet_detail' t.projet.pk %}" class="text-decoration-none">{{ t.projet.nom }}</a></td>        
+                            <td><span class="badge text-bg-{{ t.badge_statut }}">{{ t.get_statut_display }}</span></td>        
+                            <td><span class="badge text-bg-{{ t.badge_priorite }}">{{ t.get_priorite_display }}</span></td>        
+                            <td class="text-end">          
+                            <a class="btn btn-sm btn-outline-primary" href="{% url 'taches:tache_modifier' t.pk %}">Modifier</a>          
+                            <a class="btn btn-sm btn-outline-danger" href="{% url 'taches:tache_supprimer' t.pk %}">Supprimer</a></td>      
+                        </tr>    
+                            {% empty %}      
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Aucune tâche trouvée.</td>
+                            </tr>    
+                            {% endfor %}    
+                    </tbody>  
+                </table> 
+       </div> 
+            {% if is_paginated %} 
+            <nav class="mt-3">  
+                <ul class="pagination justify-content-center">    
+                    {% if page_obj.has_previous %}      
+                    <li class="page-item"><a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}    page={{ page_obj.previous_page_number }}">Précédent</a></li>    
+                     {% endif %}    
+                    <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} / {{ page_obj.pagin    ator.num_pages }}</span></li>    
+                    {% if page_obj.has_next %}      
+                    <li class="page-item"><a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}    page={{ page_obj.next_page_number }}">Suivant</a>
+                    </li>    
+                    {% endif %}  
+                </ul> 
+            </nav> 
+                {% endif %} {% endblock %}
